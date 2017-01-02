@@ -1,0 +1,15 @@
+<html ng-app="helloWorldApp">
+    <head>
+        <title>Hello World</title>        
+    </head>
+    <body>
+        <script src="../angular.min.js"></script>
+        <script>
+            var helloApp = angular.module("helloWorldApp", []);
+        </script>
+        
+        <input type="text" ng-model="nama" placeholder="Masukkan nama anda"/>
+        <h2> Halo, {{nama}} </h2>
+        <h2>{{2 + 2}}</h2>
+    </body>    
+</html>

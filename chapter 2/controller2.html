@@ -1,0 +1,15 @@
+<html ng-app="helloWorldApp">
+    <head>
+        <title>Controller</title>        
+    </head>
+    <body>
+        <div ng-controller="helloController">
+            <input type="text" ng-model="firstName" placeholder="Masukkan first name"/>
+            <input type="text" ng-model="lastName" placeholder="Masukkan last name"/>
+            <h2> Halo, {{firstName + " " +lastName}} </h2>
+        </div>
+        
+        <script src="../angular.js"></script>
+        <script src="app1.js"></script>
+    </body>
+</html>
