@@ -1,8 +1,10 @@
-var helloApp = angular.module('helloWorldApp', []);
-
-var helloController = function($scope) {
-    $scope.firstName = 'Test';
-    $scope.lastName = 'Name';
-};
-
-helloApp.controller('helloController', helloController);
+var myApp = angular
+                .module("myModule", [])
+                .controller("myController", function ($scope) {
+                    var country = {
+                        name: "United States of America",
+                        capital: "Washington, D.C.",
+                        flag: "captain-shield.png"
+                    };
+                    $scope.country = country;
+                });

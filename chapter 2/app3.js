@@ -1,8 +1,11 @@
-var helloApp = angular.module('helloWorldApp', []);
+var app = angular
+            .module("myModule", [])
+            .controller("myController", function ($scope) {
+                var employee = {
+                    firstName: "Ben",
+                    lastName: "Hastings",
+                    gender: "Male"
+                };
 
-var helloController = function($scope) {
-    $scope.firstName = 'Test';
-    $scope.lastName = 'Name';
-};
-
-helloApp.controller('helloController', helloController);
+                $scope.employee = employee;
+            });

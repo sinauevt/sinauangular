@@ -1,15 +1,22 @@
-<html ng-app="helloWorldApp">
-    <head>
-        <title>Controller</title>        
-    </head>
-    <body>
-        <div ng-controller="helloController">
-            <input type="text" ng-model="firstName" placeholder="Masukkan first name"/>
-            <input type="text" ng-model="lastName" placeholder="Masukkan last name"/>
-            <h2> Halo, {{firstName + " " +lastName}} </h2>
+<!doctype html>
+<html ng-app="myModule">
+<head>
+    <script src="../angular.js"></script>
+    <script src="app2.js"></script>
+</head>
+<body>
+    <div ng-controller="myController">
+        <div>
+            Country : {{ country.name }}
         </div>
-        
-        <script src="../angular.js"></script>
-        <script src="app1.js"></script>
-    </body>
+        <div>
+            Capital : {{ country.capital }}
+        </div>
+        <div>
+            <img ng-src="{{ country.flag }}"
+                 alt="{{ country.name + ' Flag' }}"
+                 style="height:500px; width:500px" />
+        </div>
+    </div>
+</body>
 </html>
