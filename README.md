@@ -47,12 +47,13 @@ Mari kita mulai. Seperti biasa untuk belajar sesuatu kita harus mulai dari Hello
 </html>
 ```
 
-Sample source code: chapter 1/helloworld.html.
-
-Dibawah ini adalah contoh dari expression di Angularjs:
+Selain expresi seperti diatas, berikut ini adalah contoh lain dari expression di Angularjs:
 - {{ 1 == 1 }} - Akan bernilai true
 - {{ { name: 'David', age : '30' }.name }} - Return nama dari property
 - {{ ['Mark', 'David', 'Sara'][2] }} - Return elemen ke-2 dari array
+
+Sample source code:
+- chapter 1/helloworld.html.
 
 ## Module & Controller ##
 
@@ -87,6 +88,35 @@ Setelah membuat controller, kita perlu menghubungkan controller dengan module su
 ## File Separation ##
 
 Pada contoh hello world kita tadi file javascript masih jadi satu dengan html. Sekarang kita akan coba untuk memisahkan antara HTML dengan javascript nya.
+
+```javascript
+var helloApp = angular.module('helloWorldApp', []);
+
+var helloController = function($scope) {
+    $scope.firstName = 'Test';
+    $scope.lastName = 'Name';
+};
+
+helloApp.controller('helloController', helloController);
+```
+
+```xml
+<html ng-app="helloWorldApp">
+    <head>
+        <title>Controller</title>
+    </head>
+    <body>
+        <div ng-controller="helloController">
+            <input type="text" ng-model="firstName" placeholder="Masukkan first name"/>
+            <input type="text" ng-model="lastName" placeholder="Masukkan last name"/>
+            <h2> Halo, {{firstName + " " +lastName}} </h2>
+        </div>
+
+        <script src="../angular.js"></script>
+        <script src="app1.js"></script>
+    </body>
+</html>
+```
 
 Sample source code:
 - chapter 2/controller1.html
@@ -261,7 +291,7 @@ var app = angular
 </html>
 ```
 
-`ng-model` directive bisa digunakan didalam:
+Tidak hanya textfield, `ng-model` directive bisa digunakan dikomponen lain:
 - input
 - select
 - textarea
@@ -328,7 +358,7 @@ Sample source code:
 - chapter 2/controller4.html
 - chapter 2/app4.js
 
-Bagaimana kalau nested array?
+### Bagaimana kalau nested array? ###
 
 ```javascript
 var app = angular
@@ -397,7 +427,68 @@ Sample source code:
 
 ## Event Handling ##
 
-Like button
+Event handling merupakan fungsi yang sangat penting didalam aplikasi web. Event handling menentukan behaviour dari web kita. Misalnya saat sebuah button diklik maka akan melakukan aksi apa.
+
+```javascript
+var app = angular
+            .module("myModule", [])
+            .controller("myController", function ($scope) {
+
+                var technologies = [
+                    { name: "C#", likes: 0, dislikes: 0 },
+                    { name: "ASP.NET", likes: 0, dislikes: 0 },
+                    { name: "SQL", likes: 0, dislikes: 0 },
+                    { name: "AngularJS", likes: 0, dislikes: 0 }
+                ];
+
+                $scope.technologies = technologies;
+
+                $scope.incrementLikes = function (technology) {
+                    technology.likes++;
+                };
+
+                $scope.incrementDislikes = function (technology) {
+                    technology.dislikes++;
+                };
+            });
+
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app6.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Likes</th>
+                    <th>Dislikes</th>
+                    <th>Like/Dislike</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="technology in technologies">
+                    <td> {{ technology.name }} </td>
+                    <td style="text-align:center"> {{ technology.likes }} </td>
+                    <td style="text-align:center"> {{ technology.dislikes }} </td>
+                    <td>
+                        <input type="button" ng-click="incrementLikes(technology)" value="Like" />
+                        <input type="button" ng-click="incrementDislikes(technology)" value="Dislike" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 3/controller6.html
@@ -405,14 +496,83 @@ Sample source code:
 
 ## Filter ##
 
-Filters in angular can do 3 different things
+Filter di Angular dapat digunakan untuk melakukan 3 hal ini:
 1. Format data
 2. Sort data
 3. Filter data
 
-Filters can be used with a binding expression or a directive
+Filter dapat dipakai menggunakan binding expression. Untuk lebih jelasnya mari kita coba.
 
-To apply a filter use pipe (|) character
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                {
+                    name: "Ben", dateOfBirth: new Date("November 23, 1980"),
+                    gender: "Male", salary: 55000.788
+                },
+                {
+                    name: "Sara", dateOfBirth: new Date("May 05, 1970"),
+                    gender: "Female", salary: 68000
+                },
+                {
+                    name: "Mark", dateOfBirth: new Date("August 15, 1974"),
+                    gender: "Male", salary: 57000
+                },
+                {
+                    name: "Pam", dateOfBirth: new Date("October 27, 1979"),
+                    gender: "Female", salary: 53000
+                },
+                {
+                    name: "Todd", dateOfBirth: new Date("December 30, 1983"),
+                    gender: "Male", salary: 60000
+                }
+            ];
+
+            $scope.employees = employees;
+            $scope.rowCount = 3;
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app7.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        Rows to display : <input type="number" step="1"
+                                 ng-model="rowCount" max="5" min="0" />
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Salary (number filter)</th>
+                    <th>Salary (currency filter)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees | limitTo:rowCount">
+                    <td> {{ employee.name | uppercase }} </td>
+                    <td> {{ employee.dateOfBirth | date:"dd/MM/yyyy" }} </td>
+                    <td> {{ employee.gender }} </td>
+                    <td> {{ employee.salary | number:2 }} </td>
+                    <td> {{ employee.salary | currency : "£" : 1 }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 3/controller7.html
@@ -420,7 +580,90 @@ Sample source code:
 
 ## Sorting data ##
 
-Terkadang kita perlu untuk mengurutkan data pada suatu table.
+Sorting atau pengurutan data merupakan komponen penting saat kita menampilkan data pada suatu table.
+
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                {
+                    name: "Ben", dateOfBirth: new Date("November 23, 1980"),
+                    gender: "Male", salary: 55000
+                },
+                {
+                    name: "Sara", dateOfBirth: new Date("May 05, 1970"),
+                    gender: "Female", salary: 68000
+                },
+                {
+                    name: "Mark", dateOfBirth: new Date("August 15, 1974"),
+                    gender: "Male", salary: 57000
+                },
+                {
+                    name: "Pam", dateOfBirth: new Date("October 27, 1979"),
+                    gender: "Female", salary: 53000
+                },
+                {
+                    name: "Todd", dateOfBirth: new Date("December 30, 1983"),
+                    gender: "Male", salary: 60000
+                }
+            ];
+
+            $scope.employees = employees;
+            $scope.sortColumn = "name";
+
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app8.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        Sort By :
+        <select ng-model="sortColumn">
+            <option value="name">Name ASC</option>
+            <option value="+dateOfBirth">Date of Birth ASC</option>
+            <option value="+gender">Gender ASC</option>
+            <option value="-salary">Salary DESC</option>
+        </select>
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees | orderBy:sortColumn">
+                    <td>
+                        {{ employee.name }}
+                    </td>
+                    <td>
+                        {{ employee.dateOfBirth | date:"dd/MM/yyyy" }}
+                    </td>
+                    <td>
+                        {{ employee.gender }}
+                    </td>
+                    <td>
+                        {{ employee.salary  }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 3/controller8.html
@@ -428,9 +671,99 @@ Sample source code:
 
 ## Sort row by table header ##
 
-Kali ini kita akan membuat sorting kita lebih praktis, yaitu tinggal klik pada header kolom tabel.
+Pada contoh diatas kita men-sorting data menggunakan combobox yang mana kurang praktis. Kali ini kita akan membuat sorting kita lebih praktis, yaitu tinggal klik pada header kolom tabel.
 
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
 
+            var employees = [
+                {
+                    name: "Ben", dateOfBirth: new Date("November 23, 1980"),
+                    gender: "Male", salary: 55000
+                },
+                {
+                    name: "Sara", dateOfBirth: new Date("May 05, 1970"),
+                    gender: "Female", salary: 68000
+                },
+                {
+                    name: "Mark", dateOfBirth: new Date("August 15, 1974"),
+                    gender: "Male", salary: 57000
+                },
+                {
+                    name: "Pam", dateOfBirth: new Date("October 27, 1979"),
+                    gender: "Female", salary: 53000
+                },
+                {
+                    name: "Todd", dateOfBirth: new Date("December 30, 1983"),
+                    gender: "Male", salary: 60000
+                }
+            ];
+
+            $scope.employees = employees;
+            $scope.sortColumn = "name";
+            $scope.reverseSort = false;
+
+            $scope.sortData = function (column) {
+                $scope.reverseSort = ($scope.sortColumn == column) ?
+                    !$scope.reverseSort : false;
+                $scope.sortColumn = column;
+            }
+
+            $scope.getSortClass = function (column) {
+
+                if ($scope.sortColumn == column) {
+                    return $scope.reverseSort
+                      ? 'arrow-down'
+                      : 'arrow-up';
+                }
+
+                return '';
+            }
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app9.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <table>
+            <thead>
+                <tr>
+                    <th ng-click="sortData('name')">
+                        Name <div ng-class="getSortClass('name')"></div>
+                    </th>
+                    <th ng-click="sortData('dateOfBirth')">
+                        Date of Birth <div ng-class="getSortClass('dateOfBirth')"></div>
+                    </th>
+                    <th ng-click="sortData('gender')">
+                        Gender <div ng-class="getSortClass('gender')"></div>
+                    </th>
+                    <th ng-click="sortData('salary')">
+                        Salary <div ng-class="getSortClass('salary')"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees | orderBy:sortColumn:reverseSort">
+                    <td> {{ employee.name }} </td>
+                    <td> {{ employee.dateOfBirth | date:"dd/MM/yyyy" }} </td>
+                    <td> {{ employee.gender }} </td>
+                    <td> {{ employee.salary  }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 3/controller9.html
@@ -438,7 +771,60 @@ Sample source code:
 
 ## Search filter ##
 
+Setelah tadi kita mengurutkan data, sekarang kita akan mencoba mem-filter data. Filter sangat penting saat kita ingin mencari data tertentu didalam table.
 
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                { name: "Ben", gender: "Male", salary: 55000, city: "London" },
+                { name: "Sara", gender: "Female", salary: 68000, city: "Chennai" },
+                { name: "Mark", gender: "Male", salary: 57000, city: "London" },
+                { name: "Pam", gender: "Female", salary: 53000, city: "Chennai" },
+                { name: "Todd", gender: "Male", salary: 60000, city: "London" },
+            ];
+
+            $scope.employees = employees;
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app10.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        Search : <input type="text" placeholder="Search employees"
+                        ng-model="searchText" />
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees | filter:searchText">
+                    <td> {{ employee.name }} </td>
+                    <td> {{ employee.gender }} </td>
+                    <td> {{ employee.salary  }} </td>
+                    <td> {{ employee.city  }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 4/controller10.html
@@ -446,7 +832,62 @@ Sample source code:
 
 ## Filter by multiple properties ##
 
+Terkadang kita hanya ingin mencari data dari kolom tertentu saja. Sekarang coba kita modifikasi pencarian yang telah kita buat..
 
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                { name: "Ben", gender: "Male", salary: 55000, city: "London" },
+                { name: "Sara", gender: "Female", salary: 68000, city: "Chennai" },
+                { name: "Mark", gender: "Male", salary: 57000, city: "London" },
+                { name: "Pam", gender: "Female", salary: 53000, city: "Chennai" },
+                { name: "Todd", gender: "Male", salary: 60000, city: "London" },
+            ];
+
+            $scope.employees = employees;
+        });
+
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app11.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <input type="text" placeholder="Search name" ng-model="searchText.name" />
+        <input type="text" placeholder="Search city" ng-model="searchText.city" />
+        <input type="checkbox" ng-model="exactMatch" /> Exact Match
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees | filter: searchText : exactMatch">
+                    <td> {{ employee.name }} </td>
+                    <td> {{ employee.gender }} </td>
+                    <td> {{ employee.salary  }} </td>
+                    <td> {{ employee.city  }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 4/controller11.html
@@ -454,7 +895,69 @@ Sample source code:
 
 ## Custom Filter ##
 
+Misal kita punya data gender yang tidak dituliskan dengan huruf tapi dengan angka 1 atau 2. 1 untuk laki-laki dan 2 untuk perempuan. Bagaimana cara kita menampilkan supaya angka tersebut berubah menjadi huruf supaya dapat dipahami oleh pembaca.
 
+Untuk melakukan ini kita membutuhkan yang namanya custom filter.
+
+```javascript
+var app = angular
+        .module("myModule", [])
+        .filter("gender", function () {
+            return function (gender) {
+                switch (gender) {
+                    case 1:
+                        return "Male";
+                    case 2:
+                        return "Female";
+                    case 3:
+                        return "Not disclosed";
+                }
+            }
+        })
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                { name: "Ben", gender: 1, salary: 55000 },
+                { name: "Sara", gender: 2, salary: 68000 },
+                { name: "Mark", gender: 1, salary: 57000 },
+                { name: "Pam", gender: 2, salary: 53000 },
+                { name: "Todd", gender: 3, salary: 60000 }
+            ];
+
+            $scope.employees = employees;
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app12.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees">
+                    <td> {{ employee.name }} </td>
+                    <td> {{ employee.gender | gender}} </td>
+                    <td> {{ employee.salary  }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 4/controller12.html
@@ -462,7 +965,59 @@ Sample source code:
 
 ## ng-hide dan ng-show directive ##
 
+`ng-hide` dan `ng-show` merupakan directive yang berguna untuk mengatur visibility dari suatu komponen HTML.
 
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
+
+            var employees = [
+                { name: "Ben", gender: "Male", city: "London", salary: 55000 },
+                { name: "Sara", gender: "Female", city: "Chennai", salary: 68000 },
+                { name: "Mark", gender: "Male", city: "Chicago", salary: 57000 },
+                { name: "Pam", gender: "Female", city: "London", salary: 53000 },
+                { name: "Todd", gender: "Male", city: "Chennai", salary: 60000 }
+            ];
+
+            $scope.employees = employees;
+        });
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app13.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <input type="checkbox" ng-model="hideSalary" />Hide Salary
+        <br /><br />
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>City</th>
+                    <th ng-hide="hideSalary">Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees">
+                    <td> {{ employee.name }} </td>
+                    <td> {{ employee.gender}} </td>
+                    <td> {{ employee.city}} </td>
+                    <td ng-hide="hideSalary"> {{ employee.salary  }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
 
 Sample source code:
 - chapter 4/controller13.html
@@ -470,14 +1025,88 @@ Sample source code:
 
 ## ng-include directive ##
 
-ng-include directive is used to embed an HTML page into another HTML page. This technique is extremely useful when you want to reuse a specific view in multiple pages in your application. 
+`ng-include` directive digunakan untuk menempelkan halaman HTML kedalam halaman HTML yang lain. Teknik ini sangat berguna saat kita memiliki tampilan yang dapat digunakan kembali / reuseable.
 
-The value of ng-include directive can be the name of the HTML page that you want to reuse or a property on the $scope object that points to the reusable HTML page.
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope) {
 
+            var employees = [
+                { name: "Ben", gender: "Male", salary: 55000 },
+                { name: "Sara", gender: "Female", salary: 68000 },
+                { name: "Mark", gender: "Male", salary: 57000 },
+                { name: "Pam", gender: "Female", salary: 53000 },
+                { name: "Todd", gender: "Male", salary: 60000 }
+            ];
 
-Saat kalian menjalankan ini pasti error. Kenapa? Karena kita tidak diijinkan untuk mengakses ng-include ini secara langsung dari folder. Tapi jangan khawatir, kita bukan orang pertama yang mengalami hal ini. SUdah ada orang lain yang pernah mengalami dan sudah ada cara penyelesaiannya. Bisa dibaca diweb berikut [Error Occuring while including html file using ng-include](http://stackoverflow.com/questions/32951023/error-occuring-while-including-html-file-using-ng-include).
+            $scope.employees = employees;
+            $scope.employeeView = "EmployeeTable.html";
+        });
+```
 
-Mari kita coba solusi tersebut. Pertama kita harus install http-server terlebih dahulu menggunakan perintah `npm install http-server -g`.
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        Select View :
+        <select ng-model="employeeView">
+            <option value="EmployeeTable.html">Table</option>
+            <option value="EmployeeList.html">List</option>
+        </select>
+        <br /><br />
+        <div ng-include="employeeView">
+        </div>
+    </div>
+
+    <script src="../angular.js"></script>
+    <script src="app14.js"></script>
+</body>
+</html>
+```
+
+```xml
+<!-- EmployeeList.html -->
+<ul ng-repeat="employee in employees">
+    <li>
+        {{employee.name}}
+        <ul>
+            <li>{{employee.gender}}</li>
+            <li>{{employee.salary}}</li>
+        </ul>
+    </li>
+</ul>
+```
+
+```xml
+<!-- EmployeeTable.html -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="employee in employees">
+            <td> {{ employee.name }} </td>
+            <td> {{ employee.gender}} </td>
+            <td> {{ employee.salary}} </td>
+        </tr>
+    </tbody>
+</table>
+```
+
+Saat kalian menjalankan ini pasti error. Kenapa? Karena kita tidak diijinkan untuk mengakses ng-include ini secara langsung dari folder. Tapi jangan khawatir, kita bukan orang pertama yang mengalami masalah ini. Sudah ada orang lain yang pernah mengalami dan sudah ada cara penyelesaiannya. Bisa dibaca diweb berikut [Error Occuring while including html file using ng-include](http://stackoverflow.com/questions/32951023/error-occuring-while-including-html-file-using-ng-include).
+
+Mari kita coba solusi tersebut. Pertama kita harus install http-server terlebih dahulu menggunakan perintah `npm install http-server -g`. Perintah ini digunakan untuk menginstall web server seperti apache dilocal komputer kita. Ini karena fitur Angular yang akan kita coba membutuhkan server untuk dijalankan.
+
+Setelah proses install selesai kita jalankan server dengan perintah `http-server`. Saat mengeksekusi perintah tersebut pastikan direktori kita berada di folder yang akan kita jalankan.
 
 Sample source code:
 - chapter 4/controller14.html
@@ -485,32 +1114,211 @@ Sample source code:
 - chapter 4/EmployeeList.html
 - chapter 4/EmployeeTable.js
 
-
-## Angular Service ##
-
-## $anchorscroll service ##
-
-## $http Service ##
-
 ## Routing ##
 
-In general, as the application becomes complex you will have more than one view in the application. Let's say you are building a single page application for a training institute and you have the following views
+Seiring berjalannya waktu, suatu aplikasi biasanya akan semakin komplex dan memiliki tampilan lebih dari satu. Misal kita membuat aplikasi web berbasis SPA dan memiliki tampilan seperti berikut.
  - Home
  - Courses
- - Students
 
-We can take advantage of the Angular routing feature, to have a single layout page, and then inject and swap out different views depending on the URL the end user has requested.
+Untuk membuat aplikasi web SPA kita dapat memanfaatkan fitur routing dari Angular.
 
+```javascript
+var app = angular
+            .module("Demo", ["ngRoute"])
+            .config(function ($routeProvider) {
+                $routeProvider
+                    .when("/", {
+                        controller: "homeController",
+                        templateUrl: "home.html"
+                    })
+                    .when("/home", {
+                        controller: "homeController",
+                        templateUrl: "home.html"
+                    })
+                    .when("/courses", {
+                        controller: "coursesController",
+                        templateUrl: "courses.html"
+                    })
+            })
+            .controller("homeController", function ($scope) {
+                $scope.message = "Home Page";
+            })
+            .controller("coursesController", function ($scope) {
+                $scope.courses = ["C#", "VB.NET", "ASP.NET", "SQL Server"];
+            })
+```
 
+```xml
+<!DOCTYPE html>
+<html ng-app="Demo">
+<head>
+    <title></title>
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+    <table style="font-family: Arial">
+        <tr>
+            <td colspan="2" class="header">
+                <h1>
+                    WebSite Header
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <td class="leftMenu">
+                <a href="#!/home">Home</a>
+                <a href="#!/courses">Courses</a>
+            </td>
+            <td class="mainContent">
+                <div ng-view></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="footer">
+                <b>Website Footer</b>
+            </td>
+        </tr>
+    </table>
 
-In our next video, we will discuss creating the partial templates i.e home.html, courses.html and students.html.
+    <script src="../angular.js"></script>
+    <script src="../angular-route.js"></script>
+    <script src="app15.js"></script>
+</body>
+</html>
+```
+
+```xml
+<!-- home.html -->
+<h1>{{message}}</h1>
+
+<div>
+    Test Established in 2000 by 3 S/W engineers offers very cost effective training. Test Speciality in training arena unlike other training institutions
+</div>
+<ul>
+    <li>Training delivered by real time software experts having more than 10 years of experience.</li>
+    <li>Realtime projects discussion relating to the possible interview questions.</li>
+    <li>Trainees can attend training and use lab untill you get a job.</li>
+    <li>Resume preperation and mock up interviews.</li>
+    <li>100% placement assistance.</li>
+    <li>Lab facility.</li>
+</ul>
+```
+
+```xml
+<!-- courses.html -->
+<h1>Courses we offer</h1>
+<ul>
+    <li ng-repeat="course in courses">
+        {{course}}
+    </li>
+</ul>
+```
+
+```css
+// style.css
+.header {
+    width: 800px;
+    height: 80px;
+    text-align: center;
+    background-color: #BDBDBD;
+}
+
+.footer {
+    background-color: #BDBDBD;
+    text-align: center;
+}
+
+.leftMenu {
+    height: 500px;
+    background-color: #D8D8D8;
+    width: 150px;
+}
+
+.mainContent {
+    height: 500px;
+    background-color: #E6E6E6;
+    width: 650px;
+}
+
+a{
+    display:block;
+    padding:5px
+}
+```
+
+Saat kalian jalankan kemungkinan akan kena error atau tidak berfungsi. Untuk menjalankan Angular routing kita memerlukan server.
+
+Kita tidak perlu menginstall apapun karena pada contoh yang sebelumnya kita sudah melakukan proses instalasi. Sekarang kita tinggal jalankan server dengan perintah `http-server`.
 
 Sample source code:
 - chapter 5/controller15.html
 - chapter 5/app15.js
 - chapter 5/home.html
-- chapter 5/course.html
-- chapter 5/students.html
+- chapter 5/courses.html
+- chapter 5/style.css
+
+## Angular Service ##
+
+Ketika kita membuat suatu aplikasi web biasanya kita akan mendapatkan data dari server. Data dari server tersebut kita ambil dan kita tampilkan dihalaman web.
+
+### $http Service ###
+
+Fitur untuk berkomunikasi dan mengambil data dari server ini disebut service di Angular. Dan untuk melakukannya kita akan menggunakan object `$http` yang telah disediakan oleh Angular.
+
+Saya sudah membuatkan sample aplikasi server / yang biasa kita sebut sebagai aplikasi backend. Aplikasi ini sederhana hanya berfungsi untuk menyediakan data-data mahasiswa yang nantinya akan diambil oleh Angular.
+
+Aplikasi backend ini ada di folder `chapter 6/cobaboot`. Untuk menjalankan sample program ini cukup jalankan perintah berikut `java -jar gs-spring-boot-0.1.0.jar`. Pastikan JDK sudah terinstall dan terdaftar di path variable komputer kita.
+
+```javascript
+var app = angular
+        .module("myModule", [])
+        .controller("myController", function ($scope, $http) {
+
+            $http.get("http://localhost:8081/students")
+                 .then(function (response) {
+                     $scope.students = response.data;
+                 });
+        });
+
+```
+
+```xml
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../angular.js"></script>
+    <script src="app16.js"></script>
+</head>
+<body ng-app="myModule">
+    <div ng-controller="myController">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Course</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="student in students">
+                    <td>{{student.id}}</td>
+                    <td>{{student.name}}</td>
+                    <td>{{student.course}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+```
+
+Jangan lupa run server Angular dengan perintah `http-server`. Karena fitur Angular yang satu ini juga membutuhkan server untuk menjalankannya.
+
+Sample source code:
+- chapter 6/controller16.html
+- chapter 6/app16.js
+- chapter 6/cobaboot
 
 
 
