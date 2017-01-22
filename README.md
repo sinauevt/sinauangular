@@ -1112,7 +1112,7 @@ Sample source code:
 - chapter 4/controller14.html
 - chapter 4/app14.js
 - chapter 4/EmployeeList.html
-- chapter 4/EmployeeTable.js
+- chapter 4/EmployeeTable.html
 
 ## Routing ##
 
